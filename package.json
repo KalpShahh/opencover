@@ -1,0 +1,37 @@
+{
+  "name": "vault-contracts",
+  "version": "1.0.0",
+  "description": "Foundry-based Ethereum smart contract project implementing a covered metavault with ERC-7540 asynchronous vault patterns.",
+  "author": {
+    "name": "OpenCover",
+    "email": "team@opencover.com",
+    "url": "https://opencover.com"
+  },
+  "license": "UNLICENSED",
+  "scripts": {
+    "start:dev": "anvil --mnemonic \"${ANVIL_MNEMONIC}\" --chain-id 31337",
+    "start:fork": "anvil --mnemonic \"${ANVIL_MNEMONIC}\" --fork-url https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY} --fork-block-number 23875769 --fork-chain-id 31337",
+    "deploy:dev": "forge clean && forge script script/DeployLocalDev.s.sol --rpc-url http://localhost:8545 --broadcast",
+    "deploy:fork": "forge script script/DeployLocalMainnetFork.s.sol --broadcast --unlocked --sig prepareAssets --rpc-url \"${FORGE_RPC_URL}\" && forge script script/DeployLocalMainnetFork.s.sol --broadcast --unlocked --sig setupMetavaults --rpc-url \"${FORGE_RPC_URL}\"",
+    "deploy:mainnet:dry-run": "forge clean && forge script script/DeployMainnet.s.sol:DeployMainnetDryRunScript --keystore keystore/deployer --sender ${MAINNET_DEPLOYER} --fork-url https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}",
+    "deploy:mainnet": "forge clean && forge script script/DeployMainnet.s.sol:DeployMainnetScript --keystore keystore/deployer --sender ${MAINNET_DEPLOYER} --rpc-url https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY} --slow --broadcast",
+    "snapshot:fork": "cast rpc --rpc-url \"${FORGE_RPC_URL}\" evm_snapshot",
+    "local:create-deposit-request": "forge script script/CreateLocalDepositRequest.s.sol --rpc-url \"${FORGE_RPC_URL}\" --broadcast",
+    "local:create-redemption-request": "forge script script/CreateLocalRedemptionRequest.s.sol --rpc-url \"${FORGE_RPC_URL}\" --broadcast",
+    "local:settle-requests": "forge script script/SettleLocalRequests.s.sol --rpc-url \"${FORGE_RPC_URL}\" --broadcast",
+    "local:setup-e2e-test": "bun run deploy && bun run local:create-deposit-request && bun run local:settle-requests && bun run local:create-redemption-request && bun run local:create-deposit-request",
+    "start": "bun run start:fork",
+    "deploy": "forge clean && bun run deploy:fork && bun run snapshot:fork",
+    "test": "forge clean && forge test",
+    "coverage": "forge coverage --exclude-tests --no-match-coverage script/",
+    "nsloc": "solidity-code-metrics 'src/**/*.sol'",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "solidity-code-metrics": "^0.0.28"
+  },
+  "engines": {
+    "bun": ">=1.3.0"
+  }
+}

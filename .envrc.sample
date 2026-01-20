@@ -1,0 +1,12 @@
+export ALCHEMY_API_KEY=""
+export ANVIL_MNEMONIC=""
+export VAULT_ADDRESS="0x8867E6162ED2de04f2104E3Aed80ba2BdD3A2a08" # When deployed to local Anvil node.
+export FORGE_RPC_URL="http://localhost:8545"
+
+# Deployment configuration
+export MAINNET_DEPLOYER="0x..."
+export MAINNET_KEEPER="0x..."
+export MAINNET_MANAGER="0x..."
+export MAINNET_GUARDIAN="0x..."
+export MAINNET_OWNER="0x..."
+export MAINNET_PREMIUM_COLLECTOR="0x..."

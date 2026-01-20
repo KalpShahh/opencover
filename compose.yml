@@ -1,0 +1,30 @@
+services:
+  anvil:
+    build: .
+    ports:
+      - "8545:8545"
+    environment:
+      - ANVIL_MNEMONIC=${ANVIL_MNEMONIC}
+      - ALCHEMY_API_KEY=${ALCHEMY_API_KEY}
+      - ANVIL_IP_ADDR=0.0.0.0
+    healthcheck:
+      test: cast rpc eth_blockNumber
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    volumes:
+      # Cache the forked mainnet state.
+      - anvil-rpc-cache:/home/foundry/.foundry/cache/rpc
+
+  deploy:
+    build: .
+    environment:
+      - ANVIL_MNEMONIC=${ANVIL_MNEMONIC}
+      - FORGE_RPC_URL=http://anvil:8545
+    command: ["run", "deploy"]
+    depends_on:
+      anvil:
+        condition: service_healthy
+
+volumes:
+  anvil-rpc-cache:
